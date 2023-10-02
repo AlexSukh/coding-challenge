@@ -1,0 +1,6 @@
+<div class="automation-header">
+  <h2 *ngIf="service.activeStep === 1">Step 1. For loop</h2>
+  <h2 *ngIf="service.activeStep === 2">Step 2. Choose a child-action on each loop element</h2>
+  <h2 *ngIf="service.activeStep === 3 && service.buttonActionActive">Step 3. Click a button</h2>
+  <h2 *ngIf="service.activeStep === 3 && service.inputTextActionActive">Step 3. Click an input field</h2>
+</div>

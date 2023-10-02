@@ -1,0 +1,5 @@
+<div class="automation-cta">
+  <button *ngIf="service.activeStep === 1" (click)="service.onReset()" class="transparent-button">Reset</button>
+  <button *ngIf="service.activeStep === 1" (click)="service.onSave()" class="solid-button">Save</button>
+  <button *ngIf="service.activeStep === 3" (click)="service.runBot()" class="solid-button">Run bot</button>
+</div>

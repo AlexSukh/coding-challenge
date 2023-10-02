@@ -1,0 +1,13 @@
+<div *ngIf="service.activeStep === 1" class="automation-instructions">
+      <span *ngIf="!service.selectedElements?.length">
+              Use right click to select elements for automation.
+      </span>
+  <span *ngIf="service.selectedElements && service.selectedElements.length === 1">
+              You've selected one element, select one more for automatic list selection
+      </span>
+  <span *ngIf="service.selectedElements && service.selectedElements.length > 1">
+              Great! You selected 2 elements, we predicted {{service.predictedCount > 2 ? service.predictedCount - 2 : 0  }}
+    additional element
+              In total {{service.predictedCount > 2 ? service.predictedCount : 2}} elements are selected.
+      </span>
+</div>

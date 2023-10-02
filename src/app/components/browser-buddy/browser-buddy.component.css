@@ -1,0 +1,106 @@
+.automation-panel {
+  width: 100%;
+  position: sticky;
+  left: 0px;
+  bottom: 0px;
+  border-radius: 2px;
+}
+.automation-panel .automation-content {
+  background: white;
+  margin: 0 auto;
+  height: 200px;
+  border-radius: 5px;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding:0 10px;
+
+  .automation-cta {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+  .automation-instructions-selected {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .automation-instructions-actions {
+    display: flex;
+    gap: 20px;
+    .automation-instruction-action {
+      cursor: pointer;
+      width: 200px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      border: 1px solid rgba(128, 128, 128, 0.27);
+      border-radius: 5px;
+      padding: 15px;
+      background-color: #f8f8f8;
+      &:hover {
+        transform: scale(1.05);
+      }
+      .description {
+        color: #888888;
+      }
+    }
+  }
+}
+
+
+.yellow-outline {
+  outline: 2px dashed yellow;
+}
+
+.green-outline {
+  outline: 2px solid green;
+
+}
+
+.blue-outline {
+  outline: 2px solid blue;
+}
+
+.solid-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #3498db; /* Change to your desired background color */
+  color: #ffffff; /* Change to your desired text color */
+  border: none;
+  border-radius: 5px; /* Adjust the border radius to your preference */
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px; /* Adjust the font size to your preference */
+  font-weight: bold;
+  transition: background-color 0.3s ease; /* Add a smooth transition effect */
+}
+
+.solid-button:hover {
+  background-color: #2980b9; /* Change to a slightly darker shade for the hover effect */
+}
+
+/* Transparent Button */
+.transparent-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: transparent;
+  color: #3498db; /* Change to your desired text color */
+  border: 2px solid #3498db; /* Add a border with your desired color */
+  border-radius: 5px; /* Adjust the border radius to your preference */
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px; /* Adjust the font size to your preference */
+  font-weight: bold;
+  transition: background-color 0.3s ease, color 0.3s ease; /* Add a smooth transition effect */
+}
+
+.transparent-button:hover {
+  background-color: #3498db; /* Change to your desired background color on hover */
+  color: #ffffff; /* Change to your desired text color on hover */
+}
+

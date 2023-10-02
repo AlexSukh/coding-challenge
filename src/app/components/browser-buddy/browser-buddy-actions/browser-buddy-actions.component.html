@@ -1,0 +1,26 @@
+<div *ngIf="service.activeStep === 2" class="automation-instructions-selected">
+  <div>Add action you want the bot to do on the page</div>
+  <div class="automation-instructions-actions">
+    <div (click)="service.buttonActionActive = true; service.activeStep = 3" class="automation-instruction-action"
+         [class.selected]="service.buttonActionActive">
+      <div class="icon"><img src="assets/click.png" alt="click icon" width="40px"></div>
+      <div class="title">
+        <h3>Click a button</h3>
+      </div>
+      <div class="description">
+        allows you to click on a button for each element
+      </div>
+    </div>
+    <div (click)="service.inputTextActionActive = true; service.activeStep = 3" class="automation-instruction-action">
+      <div class="icon"><img src="assets/text.png" alt="click icon" width="40px"></div>
+      <div class="title">
+        <h3>Input text</h3>
+      </div>
+      <div class="description">
+        allows you to input text for each element
+      </div>
+    </div>
+  </div>
+</div>
+<app-browser-buddy-text-action></app-browser-buddy-text-action>
+<app-browser-buddy-button-action *ngIf="service.buttonActionActive"></app-browser-buddy-button-action>
