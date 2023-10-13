@@ -5,51 +5,33 @@ import {FormControl} from "@angular/forms";
   providedIn: 'root'
 })
 export class BrowserBuddyService {
-  public appContainer: HTMLElement | null = document.getElementById('app');
-
-  public hoveredElement: HTMLElement | null = null;
-
-  public isSelecting: boolean = true;
-  public selectedElement: HTMLElement | null = null;
+  public activeStep: number = 1;
   public selectedElements: Array<HTMLElement> | null = [];
-  public selectionSaved: boolean = false;
-
-  public predictedElements: Array<HTMLElement> | null = [];
   public predictedCount: number = 0;
 
   public buttonActionActive: boolean = false;
-  public selectedButton: HTMLElement | null = null;
-  public selectedButtonChildIndex: number | null = null;
-  public predictedButtons: Array<HTMLElement> | null = [];
-
   public inputTextActionActive: boolean = false;
   public inputTextFormControl: FormControl<string> = new FormControl();
-  public selectedInput: HTMLElement | null = null;
-  public selectedInputIndex: number | null = null;
-  public predictedInputs: Array<HTMLElement> | null = [];
 
-  public activeStep: number = 1;
+  protected appContainer: HTMLElement | null = document.getElementById('app');
+  private hoveredElement: HTMLElement | null = null;
+  private selectedElement: HTMLElement | null = null;
+  private predictedElements: Array<HTMLElement> | null = [];
 
-  markHoveredElements() {
+  private selectedButton: HTMLElement | null = null;
+  private selectedButtonChildIndex: number | null = null;
+  private predictedButtons: Array<HTMLElement> | null = [];
+
+  private selectedInput: HTMLElement | null = null;
+  private selectedInputIndex: number | null = null;
+  private predictedInputs: Array<HTMLElement> | null = [];
+
+
+  public markHoveredElements(): void {
     this.appContainer?.addEventListener('mouseover', this.handleMouseOver);
     this.appContainer?.addEventListener('mouseout', this.handleMouseOut);
   }
-
-  handleMouseOver = (event: MouseEvent) => {
-    if (this.hoveredElement) {
-      this.unMarkElement(this.hoveredElement, 'yellow-outline');
-    }
-    this.hoveredElement = event.target as HTMLElement;
-    this.markElement(this.hoveredElement, 'yellow-outline');
-  }
-
-  handleMouseOut = () => {
-    if (this.hoveredElement) {
-      this.unMarkElement(this.hoveredElement, 'yellow-outline');
-    }
-  }
-
-  handleElementSelection() {
+  public handleElementSelection(): void {
     this.appContainer?.addEventListener('contextmenu', (event) => {
       event.preventDefault();
 
@@ -65,20 +47,52 @@ export class BrowserBuddyService {
     });
   }
 
-  setSelectedButton(target: HTMLElement) {
+  public onReset(): void {
+    this.clearMarkedElements(this.selectedElements, 'green-outline');
+    this.clearMarkedElements(this.predictedElements, 'blue-outline');
+
+    this.selectedElement = null;
+    this.activeStep = 1;
+  }
+  public onSave(): void {
+    this.activeStep += 1;
+  }
+  public runBot(): void {
+    if (this.inputTextActionActive) {
+      this.onInputTextAction();
+    }
+    if (this.buttonActionActive) {
+      this.onButtonClickAction();
+    }
+  }
+  private handleMouseOver = (event: MouseEvent): void => {
+    if (this.hoveredElement) {
+      this.unMarkElement(this.hoveredElement, 'yellow-outline');
+    }
+    this.hoveredElement = event.target as HTMLElement;
+    this.markElement(this.hoveredElement, 'yellow-outline');
+  }
+
+  private handleMouseOut = (): void => {
+    if (this.hoveredElement) {
+      this.unMarkElement(this.hoveredElement, 'yellow-outline');
+    }
+  }
+
+  private setSelectedButton(target: HTMLElement): void {
     this.selectedButton = target;
     this.selectedButtonChildIndex = this.findChildElemIndex(target);
     this.predictedButtons = this.getChildrenAtIndex(this.predictedElements!, this.selectedButtonChildIndex!);
   }
 
-  setSelectedInput(target: HTMLElement) {
+  private setSelectedInput(target: HTMLElement): void {
     this.selectedInput = target;
     this.selectedInput.blur();
     this.selectedInputIndex = this.findChildElemIndex(target);
     this.predictedInputs = this.getChildrenAtIndex(this.predictedElements!, this.selectedInputIndex!);
   }
 
-  selectElement(target: HTMLElement) {
+  private selectElement(target: HTMLElement): void {
     this.selectedElement = target;
     this.markElement(this.selectedElement, 'green-outline');
     this.selectedElement.blur();
@@ -89,7 +103,7 @@ export class BrowserBuddyService {
     }
   }
 
-  findChildElemIndex(element: HTMLElement) {
+  private findChildElemIndex(element: HTMLElement): number | null {
     const parent = element.parentElement;
     if (!parent) {
       return null;
@@ -101,16 +115,8 @@ export class BrowserBuddyService {
   }
 
 
-  onReset() {
-    this.clearMarkedElements(this.selectedElements, 'green-outline');
-    this.clearMarkedElements(this.predictedElements, 'blue-outline');
 
-    this.selectedElement = null;
-    this.selectionSaved = false;
-    this.activeStep = 1;
-  }
-
-  clearMarkedElements(elements: HTMLElement[] | null, className: string) {
+  private clearMarkedElements(elements: HTMLElement[] | null, className: string): void {
     if (elements) {
       for (let element of elements) {
         this.unMarkElement(element, className);
@@ -120,24 +126,19 @@ export class BrowserBuddyService {
   }
 
 
-  onSave() {
-    this.activeStep += 1;
-    this.isSelecting = false;
-    this.selectionSaved = true;
-  }
 
-  selectPredicted() {
+  private selectPredicted(): void {
     if (this.selectedElements?.length !== 2) {
       return;
     }
     const [elemOne, elemTwo] = this.selectedElements;
 
-    let predictedByTag = this.appContainer?.getElementsByTagName(elemTwo.tagName);
-    let predictedByParent = [];
+    let predictedByTag: HTMLCollectionOf<Element> | undefined = this.appContainer?.getElementsByTagName(elemTwo.tagName);
+    let predictedByParent: HTMLElement[] = [];
 
     if (predictedByTag) {
       for (let i = 0; i < predictedByTag.length; i++) {
-        let elem = predictedByTag[i] as HTMLElement;
+        let elem: HTMLElement = predictedByTag[i] as HTMLElement;
         if (elem.parentElement?.isSameNode(elemOne.parentElement) || elem.parentElement?.parentElement?.isSameNode(elemOne.parentElement?.parentElement!)) {
           predictedByParent.push(elem);
           if (!elem.isSameNode(elemOne) && !elem.isSameNode(elemTwo)) {
@@ -151,16 +152,9 @@ export class BrowserBuddyService {
     this.predictedCount = predictedByParent?.length || 0;
   }
 
-  runBot() {
-    if (this.inputTextActionActive) {
-      this.onInputTextAction();
-    }
-    if (this.buttonActionActive) {
-      this.onButtonClickAction();
-    }
-  }
 
-  onButtonClickAction() {
+
+  private onButtonClickAction(): void {
     this.predictedButtons?.forEach((elem) => {
       if (this.selectedElements) {
         elem.click();
@@ -168,7 +162,7 @@ export class BrowserBuddyService {
     })
   }
 
-  onInputTextAction() {
+  private onInputTextAction(): void {
     this.predictedInputs?.forEach((elem) => {
       if (elem instanceof HTMLInputElement) {
         elem.value = this.inputTextFormControl.value;
@@ -176,7 +170,7 @@ export class BrowserBuddyService {
     })
   }
 
-  getChildrenAtIndex(parents: HTMLElement[], index: number): HTMLElement[] {
+  private getChildrenAtIndex(parents: HTMLElement[], index: number): HTMLElement[] {
     const childrenAtIndex: HTMLElement[] = [];
 
     for (const parent of parents) {
@@ -197,11 +191,11 @@ export class BrowserBuddyService {
     return childrenAtIndex;
   }
 
-  markElement(element: HTMLElement, colorClass: string) {
+  private markElement(element: HTMLElement, colorClass: string): void {
     element.classList.add(colorClass);
   }
 
-  unMarkElement(element: HTMLElement, colorClass: string) {
+  private unMarkElement(element: HTMLElement, colorClass: string): void {
     element.classList.remove(colorClass);
   }
 }
