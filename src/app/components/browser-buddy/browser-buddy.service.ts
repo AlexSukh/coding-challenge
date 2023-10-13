@@ -27,11 +27,11 @@ export class BrowserBuddyService {
   private selectedInputIndex: number | null = null;
   private predictedInputs: Array<HTMLElement> | null = [];
 
-
   public markHoveredElements(): void {
     this.appContainer?.addEventListener('mouseover', this.handleMouseOver);
     this.appContainer?.addEventListener('mouseout', this.handleMouseOut);
   }
+
   public handleElementSelection(): void {
     this.appContainer?.addEventListener('contextmenu', (event) => {
       event.preventDefault();
@@ -55,9 +55,11 @@ export class BrowserBuddyService {
     this.selectedElement = null;
     this.activeStep = 1;
   }
+
   public onSave(): void {
     this.activeStep += 1;
   }
+
   public runBot(): void {
     if (this.inputTextActionActive) {
       this.onInputTextAction();
@@ -66,6 +68,7 @@ export class BrowserBuddyService {
       this.onButtonClickAction();
     }
   }
+
   private handleMouseOver = (event: MouseEvent): void => {
     if (this.hoveredElement) {
       this.unMarkElement(this.hoveredElement, 'yellow-outline');
@@ -115,8 +118,6 @@ export class BrowserBuddyService {
     return childArray.indexOf(element);
   }
 
-
-
   private clearMarkedElements(elements: HTMLElement[] | null, className: string): void {
     if (elements) {
       for (let element of elements) {
@@ -125,7 +126,6 @@ export class BrowserBuddyService {
       elements.length = 0;
     }
   }
-
 
   private selectPredicted(): void {
     if (this.selectedElements?.length !== 2) {
@@ -146,7 +146,6 @@ export class BrowserBuddyService {
     let rootElem = elemTwo.parentElement!.parentElement!;
     let predictedElements: HTMLElement[] = [];
 
-
     let predictedByTag: HTMLCollectionOf<Element> | undefined = rootElem.getElementsByTagName(elemTwo.tagName);
 
     if (predictedByTag) {
@@ -163,8 +162,6 @@ export class BrowserBuddyService {
 
     this.predictedCount = predictedElements?.length || 0;
   }
-
-
 
   private onButtonClickAction(): void {
     this.predictedButtons?.forEach((elem) => {
