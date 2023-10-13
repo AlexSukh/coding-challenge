@@ -14,6 +14,7 @@ export class BrowserBuddyService {
   public inputTextFormControl: FormControl<string> = new FormControl();
 
   protected appContainer: HTMLElement | null = document.getElementById('app');
+
   private hoveredElement: HTMLElement | null = null;
   private selectedElement: HTMLElement | null = null;
   private predictedElements: Array<HTMLElement> | null = [];
@@ -126,30 +127,41 @@ export class BrowserBuddyService {
   }
 
 
-
   private selectPredicted(): void {
     if (this.selectedElements?.length !== 2) {
       return;
     }
     const [elemOne, elemTwo] = this.selectedElements;
+    // heuristic: when tags don't match, selected elements are less likely to be part of a list
+    if(elemOne.tagName !== elemTwo.tagName) {
+      return;
+    }
+    // heuristic: check if selected elements have same parent or grandparent (for cases when elements are wrapped in container element)
+    if(!elemOne.parentElement!.isSameNode(elemTwo.parentElement) &&
+        !elemOne.parentElement!.parentElement!.isSameNode(elemTwo.parentElement!.parentElement)) {
+      return;
+    }
 
-    let predictedByTag: HTMLCollectionOf<Element> | undefined = this.appContainer?.getElementsByTagName(elemTwo.tagName);
-    let predictedByParent: HTMLElement[] = [];
+    // heuristic: choosing grandparent element as root element to constrain search space
+    let rootElem = elemTwo.parentElement!.parentElement!;
+    let predictedElements: HTMLElement[] = [];
+
+
+    let predictedByTag: HTMLCollectionOf<Element> | undefined = rootElem.getElementsByTagName(elemTwo.tagName);
 
     if (predictedByTag) {
       for (let i = 0; i < predictedByTag.length; i++) {
         let elem: HTMLElement = predictedByTag[i] as HTMLElement;
-        if (elem.parentElement?.isSameNode(elemOne.parentElement) || elem.parentElement?.parentElement?.isSameNode(elemOne.parentElement?.parentElement!)) {
-          predictedByParent.push(elem);
+        predictedElements.push(elem);
+          // We keep selection color for already selected elements
           if (!elem.isSameNode(elemOne) && !elem.isSameNode(elemTwo)) {
-            this.markElement(elem, 'blue-outline')
-          }
+            this.markElement(elem, 'blue-outline');
         }
       }
     }
-    this.predictedElements = predictedByParent;
+    this.predictedElements = predictedElements;
 
-    this.predictedCount = predictedByParent?.length || 0;
+    this.predictedCount = predictedElements?.length || 0;
   }
 
 
